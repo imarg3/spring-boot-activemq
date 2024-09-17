@@ -1,0 +1,73 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.8'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'org.code'
+version = '0.0.1-SNAPSHOT'
+ext {
+	activeMqVersion = '5.18.2'
+}
+
+println activeMqVersion
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+	configureEach {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot Web for REST API
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Boot Starter for ActiveMQ
+	implementation 'org.springframework.boot:spring-boot-starter-activemq'
+
+	implementation 'org.springframework:spring-jms'
+
+	// ActiveMQ and embedded broker dependencies
+	implementation "org.apache.activemq:activemq-broker:$activeMqVersion"
+	implementation "org.apache.activemq:activemq-client:$activeMqVersion"
+
+	// Lombok for reducing boilerplate code
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// JMS API dependency (adding javax.jms API)
+	implementation 'javax.jms:javax.jms-api:2.0.1'
+
+	implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
+	implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+	testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
+
+	// Spring Boot and JUnit 5 test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// ActiveMQ JUnit 5 Extension (for Embedded ActiveMQ support)
+	testImplementation "org.apache.activemq.tooling:activemq-junit:$activeMqVersion"
+
+	// JUnit 5 dependencies
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.0'
+}
+
+test {
+	useJUnitPlatform()
+}
